@@ -1,21 +1,22 @@
 library(shiny)
 
-# Define UI for random distribution application 
+# Define UI for the dashboard.
 shinyUI(fluidPage(
   
   # Application title
   titlePanel("Test Dashboard"),
   
-  # Sidebar with controls to select the random distribution type
-  # and number of observations to generate. Note the use of the
-  # br() element to introduce extra vertical spacing
+  # Sidebar inputs used to predict the amount of customers at a given time.
   sidebarLayout(
     sidebarPanel(
+      # DayOfMonth input (numeric slider)
       sliderInput("dayOfMonth", "Day of the month:",
                   min = 1,
                   max = 31,
                   value = 1),
       br(),
+      
+      # DayOfWeek input (drop down)
       selectInput("dayOfWeek", "Day of the week:",
                    c("Monday" = "MONDAY",
                      "Tuesday" = "TUESDAY",
@@ -25,9 +26,13 @@ shinyUI(fluidPage(
                      "Saturday" = "SATURDAY",
                      "Sunday" = "SUNDAY")),
       br(),
+      
+      # Temperature input (numeric text box)
       numericInput("temp", "Temperature (F):",
                    value = 0),
       br(),
+      
+      # Precipitation input (drop down)
       selectInput("prec", "Precipitation:",
                   c("Clear" = "Clear",
                     "Cloudy" = "Clouds",
@@ -37,6 +42,8 @@ shinyUI(fluidPage(
                     "Raining" = "Rain",
                     "Snowing" = "Snow")),
       br(),
+      
+      # Minute input (double-ended numeric slider)
       sliderInput("minute",
                   "Minute",
                   min = 0,
@@ -45,8 +52,7 @@ shinyUI(fluidPage(
                   step = 5)
     ),
     
-    # Show a tabset that includes a plot, summary, and table view
-    # of the generated distribution
+    # Create a panel to display both the plot and text outputs defined in the server logic.
     mainPanel(
       plotOutput("plot", width = "100%"),
       textOutput("text")

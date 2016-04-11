@@ -1,4 +1,7 @@
+# M5P regression model created using RWeka's M5P function and translatted into R code.
 predictCustomerAmount <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
+  
+  # Tree for the regression model
   
   if (minute <= 907.5) {
     if (minute <= 367.5) {
@@ -83,7 +86,7 @@ predictCustomerAmount <- function(dayOfMonth, dayOfWeek, minute, temperature, pr
   }
 }
 
-# rules
+# All linear functions for the model tree.
 
 lm1 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
   dayOfWeekConst <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 0.5092, 0)
