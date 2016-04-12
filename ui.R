@@ -4,11 +4,17 @@ library(shiny)
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel("Test Dashboard"),
+  titlePanel("Cafe Data Predictor"),
   
+  tabsetPanel(
+    tabPanel("Customer Predictor",
   # Sidebar inputs used to predict the amount of customers at a given time.
   sidebarLayout(
     sidebarPanel(
+      #tags$head(
+      #  tags$script(src = "modifyMinute.js")
+      #),
+      
       # DayOfMonth input (numeric slider)
       sliderInput("dayOfMonth", "Day of the month:",
                   min = 1,
@@ -44,12 +50,23 @@ shinyUI(fluidPage(
       br(),
       
       # Minute input (double-ended numeric slider)
-      sliderInput("minute",
-                  "Minute",
-                  min = 0,
-                  max = 24*60,
-                  value = c(11*60, 13*60),
-                  step = 5)
+      sliderInput("time",
+                  "Time",
+                  min = strptime("00:00", "%H:%M", tz = "UTC"),
+                  max = strptime("23:59", "%H:%M", tz = "UTC"),
+                  #value = c(11*60, 13*60),
+                  value = c(strptime("11:00", "%H:%M", tz = "UTC"), strptime("13:00", "%H:%M", tz = "UTC")),
+                  step = 60*5,
+                  timeFormat = "%H:%M",
+                  timezone = "+0000")
+      
+      
+      # Minute input
+      #numericInput("hourLower", "Time Range", value = 11),
+      #numericInput("minuteLower", "", value = 0),
+      #numericInput("hourUpper", "", value = 1),
+      #numericInput("minuteUpper", "", value = 0)
+      
     ),
     
     # Create a panel to display both the plot and text outputs defined in the server logic.
@@ -57,5 +74,10 @@ shinyUI(fluidPage(
       plotOutput("plot", width = "100%"),
       textOutput("text")
     )
+  )
+    ),
+  tabPanel("Healthy Predictor"),
+  tabPanel("Advertisement Predictor"),
+  tabPanel("Demographic Predictor")
   )
 ))
