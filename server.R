@@ -4,11 +4,6 @@ source("customerPredictor.R")
 # Define server logic for the dashboard.
 shinyServer(function(input, output) {
   
-  # Reactive expression to generate the requested distribution.
-  # This is called whenever the inputs change. The output
-  # functions defined below then all use the value computed from
-  # this expression
-  
   # Reactive expression called whenever the inputs changed.
   # Used to calculate the minutes set and the machine learning function.
   data <- reactive({
@@ -49,7 +44,7 @@ shinyServer(function(input, output) {
     
     # Output the plot.
     # Outputs time (x-axis) vs customer amount (y-axis) as a line graph.
-    # Sets the graph's title and labels, and turns there axes off (to be defined later).
+    # Sets the graph's title and labels, and turns their axes off (to be defined later).
     plot(data(), 
          type="l", 
          ylim=c(1,maxLim), 
