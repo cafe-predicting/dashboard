@@ -1,284 +1,436 @@
 # M5P regression model created using RWeka's M5P function and translatted into R code.
-predictCustomerAmount <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
+predictCustomerAmount <- function(dayOfWeek, minute, temperature, precipitation) {
   
   # Tree for the regression model
   
-  if (minute <= 907.5) {
+  if (minute <= 877.5) {
     if (minute <= 367.5) {
-      return(lm1(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+      return(lm1(dayOfWeek, minute, temperature, precipitation))
     } else {
       if (minute <= 787.5) {
         if (minute <= 682.5) {
           if (minute <= 442.5) {
             if (minute <= 412.5) {
-              return(lm2(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+              return(lm2(dayOfWeek, minute, temperature, precipitation))
             } else {
               if (minute <= 427.5) {
-                return(lm3(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+                return(lm3(dayOfWeek, minute, temperature, precipitation))
               } else {
-                return(lm4(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+                return(lm4(dayOfWeek, minute, temperature, precipitation))
               }
             }
           } else {
             if (minute <= 592.5) {
-              if (temperature <= 32.855) {
+              if (temperature <= 33.728) {
                 if (dayOfWeek == "SATURDAY" || dayOfWeek == "SUNDAY") {
-                  return(lm5(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+                  return(lm5(dayOfWeek, minute, temperature, precipitation))
                 } else {
                   if (minute <= 487.5) {
-                    return(lm6(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+                    return(lm6(dayOfWeek, minute, temperature, precipitation))
                   } else {
                     if (minute <= 532.5) {
-                      return(lm7(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+                      return(lm7(dayOfWeek, minute, temperature, precipitation))
                     } else {
-                      return(lm8(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+                      return(lm8(dayOfWeek, minute, temperature, precipitation))
                     }
                   }
                 }
               } else {
                 if (minute <= 562.5) {
-                  return(lm9(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+                  return(lm9(dayOfWeek, minute, temperature, precipitation))
                 } else {
-                  return(lm10(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+                  return(lm10(dayOfWeek, minute, temperature, precipitation))
                 }
               }
             } else {
               if (minute <= 652.5) {
                 if (minute <= 622.5) {
-                  return(lm11(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+                  return(lm11(dayOfWeek, minute, temperature, precipitation))
                 } else {
-                  return(lm12(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+                  return(lm12(dayOfWeek, minute, temperature, precipitation))
                 }
               } else {
-                return(lm13(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+                if (minute <= 667.5) {
+                  return(lm13(dayOfWeek, minute, temperature, precipitation))
+                } else {
+                  if (dayOfWeek == "THURSDAY" || dayOfWeek == "SATURDAY" || dayOfWeek == "SUNDAY") {
+                    if (temperature <= 35.537) {
+                      return(lm14(dayOfWeek, minute, temperature, precipitation))
+                    } else {
+                      return(lm15(dayOfWeek, minute, temperature, precipitation))
+                    }
+                  } else {
+                    if (temperature <= 37.976) {
+                      return(lm16(dayOfWeek, minute, temperature, precipitation))
+                    } else {
+                      return(lm17(dayOfWeek, minute, temperature, precipitation))
+                    }
+                  }
+                }
               }
             }
           }
         } else {
           if (minute <= 757.5) {
-            if (dayOfWeek == "THURSDAY" || dayOfWeek == "SATURDAY" || dayOfWeek == "SUNDAY") {
-              return(lm14(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
-            } else {
-              if (dayOfWeek != "FRIDAY") {
-                if (minute <= 727.5) {
-                  if (minute <= 697.5) {
-                    return(lm15(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
-                  } else {
-                    return(lm16(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
-                  }
-                } else {
-                  return(lm17(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
-                }
-              } else {
-                return(lm18(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
-              }
-            }
+            return(lm18(dayOfWeek, minute, temperature, precipitation))
           } else {
-            return(lm19(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+          return(lm19(dayOfWeek, minute, temperature, precipitation))
           }
         }
       } else {
-        return(lm20(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+        return(lm20(dayOfWeek, minute, temperature, precipitation))
       }
     }
   } else {
-    return(lm21(dayOfMonth, dayOfWeek, minute, temperature, precipitation))
+    return(lm21(dayOfWeek, minute, temperature, precipitation))
   }
 }
 
+# Define day of week constants
+monday <- "MONDAY"
+tuesday <- "TUESDAY"
+wednesday <- "WEDNESDAY"
+thursday <- "THURSDAY"
+friday <- "FRIDAY"
+saturday <- "SATURDAY"
+sunday <- "SUNDAY"
+
+# Define precipitation constants
+clear <- "Clear"
+clouds <- "Clouds"
+drizzle <- "Drizzle"
+fog <- "Fog"
+rain <- "Rain"
+mist <- "Mist"
+snow <- "Snow"
+
+
 # All linear functions for the model tree.
 
-lm1 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 0.5092, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.1236, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2037, 0)
-  
-  return(dayOfWeekConst + (0.0007*minute) - (0.0043*temperature) + precipitationConst1 + precipitationConst2 - 0.2288)
+# Linear functions are defined as a constant multiplied by one of the independent variables and then summed up.
+# For the independent variables that are factors, and not numeric, the constant is multiplied against a boolean expression so that if
+#   the expression is false, the constant multiplies by 0, and if true it is multiplied by 1.
+lm1 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    0.001 * minute 
+    - 0.0066 * temperature 
+    + 0.1977 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.2033 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 0.5148 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1151 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.2876
+  )
 }
 
-lm2 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SUNDAY", 5.7682, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "TUESDAY" || dayOfWeek == "FRIDAY", 0.5069, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 - dayOfWeekConst2 + (0.0403*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 - 16.5062)
+lm2 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    0.041 * minute 
+    - 0.008 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 5.7747 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    - 16.7541
+  )
 }
 
-lm3 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SUNDAY", 2.3848, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 5.9363, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 + dayOfWeekConst2 + (0.2297*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 - 97.2641)
+lm3 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    0.2223 * minute 
+    - 0.008 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 2.2589 * (dayOfWeek == saturday || dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 5.9695 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    - 94.0477
+  )
 }
 
-lm4 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SUNDAY", 6.1373, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 4.9726, 0)
-  dayOfWeekConst3 <- ifelse(dayOfWeek == "FRIDAY", 0.7104, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 + dayOfWeekConst2 + dayOfWeekConst3 + (0.2644*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 - 112.0913)
+lm4 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    0.2423 * minute 
+    - 0.008 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 6.0319 * (dayOfWeek == saturday || dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 5.2157 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.9235 * (dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    + 1.1354 * (dayOfWeek == friday)
+    - 102.6086
+  )
 }
 
-lm5 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 11.7935, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "FRIDAY", 0.448, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 - dayOfWeekConst2 - (0.003*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 + 1.7007)
+lm5 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    -0.003 * minute 
+    - 0.0857 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 11.2191 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    + 4.1937
+  )
 }
 
-lm6 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 11.3821, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "FRIDAY", 0.448, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return((0.1515*dayOfMonth) + dayOfWeekConst1 - dayOfWeekConst2 - (0.003*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 + 6.6113)
+lm6 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    -0.003 * minute 
+    - 0.1392 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 10.3636 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    + 11.1423
+  )
 }
 
-lm7 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 11.3821, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "FRIDAY", 0.448, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 - dayOfWeekConst2 - (0.0136*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 + 17.126)
+lm7 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    -0.0013 * minute 
+    - 0.2286 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 10.3636 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    + 14.2364
+  )
 }
 
-lm8 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 11.3821, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "FRIDAY", 0.448, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 - dayOfWeekConst2 - (0.0325*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 + 25.3004)
+lm8 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    -0.0176 * minute 
+    - 0.1668 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 10.3636 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    + 20.3591
+  )
 }
 
-lm9 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 6.3587, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "FRIDAY", 5.7027, 0)
-  dayOfWeekConst3 <- ifelse(dayOfWeek == "FRIDAY", 4.7094, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
+lm9 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    0.0248 * minute 
+    - 0.008 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 6.6787 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    + 1.3997
+  )
   
-  return(dayOfWeekConst1 - dayOfWeekConst2 + dayOfWeekConst3 + (0.0574*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 - 13.5431)
 }
 
-lm10 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 6.3587, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "FRIDAY", 1.5701, 0)
-  dayOfWeekConst3 <- ifelse(dayOfWeek == "FRIDAY", 0.9091, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return((0.1866*dayOfMonth) + dayOfWeekConst1 - dayOfWeekConst2 + dayOfWeekConst3 - (0.003*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 + 11.1758)
+lm10 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    -0.0108 * minute 
+    - 0.008 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 6.6787 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    + 16.7788
+  )
 }
 
-lm11 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 10.7534, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst - (0.0274*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 + 16.8867)
+lm11 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    -0.0372 * minute 
+    - 0.008 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 10.937 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    + 23.2608
+  )
 }
 
-lm12 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 7.6669, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek != "THURSDAY" && dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 0.6188, 0)
-  dayOfWeekConst3 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "TUESDAY" || dayOfWeek == "FRIDAY", 0.5924, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 + dayOfWeekConst2 - dayOfWeekConst3 - (0.0252*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 + 15.4688)
+lm12 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    -0.0819 * minute 
+    - 0.008 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 7.7363 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    + 52.0061
+  )
 }
 
-lm13 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 5.9809, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek != "THURSDAY" && dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 2.5171, 0)
-  dayOfWeekConst3 <- ifelse(dayOfWeek == "FRIDAY", 1.8395, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 + dayOfWeekConst2 - dayOfWeekConst3 + (0.4427*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 - 291.4329)
+lm13 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    0.1897 * minute 
+    - 0.008 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 1.1339 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 9.6794 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.8675 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    - 126.7732
+  )
 }
 
-lm14 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 35.9277, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "FRIDAY", 3.0336, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 - dayOfWeekConst2 - (0.0254*minute) - (0.0762*temperature) + precipitationConst1 + precipitationConst2 + 22.0164)
+lm14 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    0.1776 * minute 
+    - 0.008 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 1.0791 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 8.7993 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 2.3618 * (dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    - 116.9068
+  )
 }
 
-lm15 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 13.5541, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "FRIDAY", 1.0055, 0)
-  dayOfWeekConst3 <- ifelse(dayOfWeek == "FRIDAY", 3.5666, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 2.9616, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 - dayOfWeekConst2 - dayOfWeekConst3 + (0.0468*minute) - (0.2313*temperature) + precipitationConst1 + precipitationConst2 + 0.9412)
+lm15 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    0.1776 * minute 
+    - 0.008 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 1.0791 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 8.7993 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 2.3618 * (dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    - 116.7471
+  )
 }
 
-lm16 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 13.5541, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "FRIDAY", 1.0055, 0)
-  dayOfWeekConst3 <- ifelse(dayOfWeek == "FRIDAY", 3.5666, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 2.9616, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 - dayOfWeekConst2 - dayOfWeekConst3 + (0.01*minute) - (0.2273*temperature) + precipitationConst1 + precipitationConst2 + 29.0306)
+lm16 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    0.1776 * minute 
+    - 0.0317 * temperature 
+    + 0.2353 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 1.7228 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 8.7993 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 1.7495 * (dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    - 114.4619
+  )
 }
 
-lm17 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 13.5541, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "FRIDAY", 1.0055, 0)
-  dayOfWeekConst3 <- ifelse(dayOfWeek == "FRIDAY", 3.5666, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 3.2782, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 - dayOfWeekConst2 - dayOfWeekConst3 - (0.0784*minute) - (0.2427*temperature) + precipitationConst1 + precipitationConst2 + 87.7833)
+lm17 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    0.1776 * minute 
+    - 0.0258 * temperature 
+    + 0.4239 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 1.8414 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 8.7993 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 1.7495 * (dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    - 115.0859
+  )
 }
 
-lm18 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 13.5541, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "FRIDAY", 1.6758, 0)
-  dayOfWeekConst3 <- ifelse(dayOfWeek == "FRIDAY", 4.521, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 2.8349, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 - dayOfWeekConst2 - dayOfWeekConst3 - (0.0534*minute) - (0.1342*temperature) + precipitationConst1 + precipitationConst2 + 64.3095)
+lm18 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    -0.0314 * minute 
+    - 0.1849 * temperature 
+    + 1.4629 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 1.0406 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 35.5686 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    - 6.5521 * (dayOfWeek == friday)
+    + 29.7939
+  )
 }
 
-lm19 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 20.0823, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "FRIDAY", 2.0371, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.2597, 0)
-  
-  return(dayOfWeekConst1 - dayOfWeekConst2 - (0.4477*minute) - (0.0527*temperature) + precipitationConst1 + precipitationConst2 + 347.5983)
+lm19 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    -0.4318 * minute 
+    - 0.008 * temperature 
+    + 7.0522 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 4.2915 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.257 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 17.3502 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1966 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.085 * (dayOfWeek == monday || dayOfWeek == friday)
+    - 1.9118 * (dayOfWeek == friday)
+    + 332.7769
+  )
 }
 
-lm20 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst1 <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 3.4198, 0)
-  dayOfWeekConst2 <- ifelse(dayOfWeek == "MONDAY" || dayOfWeek == "FRIDAY", 1.3201, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0851, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.4297, 0)
-  
-  return(dayOfWeekConst1 + dayOfWeekConst2 - (0.0236*minute) - (0.0025*temperature) + precipitationConst1 + precipitationConst2 + 20.0143)
+lm20 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    -0.0299 * minute 
+    - 0.0169 * temperature 
+    + 0.4359 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0578 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.5529 * (precipitation == rain || precipitation == mist)
+    + 0.086 * (precipitation == mist)
+    + 2.1091 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 2.2708 * (dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.4813 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    - 0.2952 * (dayOfWeek == monday || dayOfWeek == friday)
+    + 26.0812
+  )
 }
 
-lm21 <- function(dayOfMonth, dayOfWeek, minute, temperature, precipitation) {
-  dayOfWeekConst <- ifelse(dayOfWeek != "SATURDAY" && dayOfWeek != "SUNDAY", 0.1937, 0)
-  precipitationConst1 <- ifelse(precipitation == "Clouds" || precipitation == "Rain" || precipitation == "Snow" || precipitation == "Mist", 0.0559, 0)
-  precipitationConst2 <- ifelse(precipitation == "Snow" || precipitation == "Mist", 0.1491, 0)
-  
-  return(dayOfWeekConst - (0.0001*minute) + precipitationConst1 + precipitationConst2 + 0.0396)
+lm21 <- function(dayOfWeek, minute, temperature, precipitation) {
+  return(
+    0 * minute 
+    - 0.0014 * temperature 
+    + 0.1507 * (precipitation == fog || precipitation == snow || precipitation == clouds || precipitation == rain || precipitation == mist)
+    - 0.0995 * (precipitation == clouds || precipitation == rain || precipitation == mist)
+    + 0.0626 * (precipitation == rain || precipitation == mist)
+    + 0.1482 * (precipitation == mist)
+    + 0.1857 * (dayOfWeek == thursday || dayOfWeek == tuesday || dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.052 * (dayOfWeek == wednesday || dayOfWeek == monday || dayOfWeek == friday)
+    + 0.1546
+  )
 }
