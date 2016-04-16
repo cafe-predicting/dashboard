@@ -27,7 +27,7 @@ shinyServer(function(input, output) {
     # Apply the function predictCustomerAmount() to every minute in the data frame (where x is the minute)
     customerData$customerCount <-
       apply(as.data.frame(minutes), 1, 
-            function(x) predictCustomerAmount(input$dayOfMonth, input$dayOfWeek, x, input$temp, input$prec))
+            function(x) predictCustomerAmount(input$dayOfWeek, x, input$temp, input$prec))
     
     # predictCustomerAmount calculates the amount of customers over the next 15 minutes from the minute inputted
     # so divide this number by 15.
@@ -80,6 +80,6 @@ shinyServer(function(input, output) {
   
   # Sum up all the customers predicted for each minute and output it as text below the plot.
   output$text <- renderText({
-    paste(format(sum(data()$customerCount), digits = 6), " customers")
+    paste("Total amount of customers: ", format(sum(data()$customerCount), digits = 6))
   })
 })
