@@ -18,8 +18,8 @@ shinyUI(fluidPage(
   # Note: display: 'none' cannot be used as the javascript expressions used by the conditionalPanels below will not be able to read 
   # the value for loggedIn.
   tags$script("
-    document.getElementById('loggedIn').style.height = '0';
-    document.getElementById('loggedIn').style.overflow = 'hidden';
+    $('#loggedIn').css('height', '0');
+    $('#loggedIn').css('overflow', 'hidden');
   "),
   
   # Displays that the user is logged in and their username.
@@ -61,7 +61,11 @@ shinyUI(fluidPage(
   # This panel is only displayed if the user is logged in (Predictors)
   conditionalPanel(condition = "output.loggedIn == '1'",
   
-    actionButton("logoutButton", "Logout"),
+    actionLink("logoutButton", "Logout"),
+    tags$script("
+      $('#logoutButton').css('float', 'right');
+      $('#logoutButton').css('display', 'in-line');
+    "),
 
     # Create a panel to contain the tabs for each predictor.
     tabsetPanel(
