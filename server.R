@@ -1,8 +1,115 @@
 library(shiny)
+library(PKI)
 source("customerPredictor.R")
 
 # Define server logic for the dashboard.
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
+  
+  # Create a SHA256 key
+  key <- PKI.digest(charToRaw("cafe-data-predicting"), "SHA256")
+  
+  # Set the default user values for their session to being logged out.
+  # Note: This method for checking a user's login status is needed as Shiny does not support user permissions without purchasing Shiny Server Pro.
+  output$loggedIn <- renderText({paste("0")})
+  output$loginStatus <- renderText({paste("")})
+  loggedIn <- FALSE
+  
+  # Executes everytime the login button is pressed
+  login <- observeEvent(input$loginButton, {
+    # Check if user is logged in:
+    if (!is.null(input$loginUsername) && !loggedIn) {
+      # Encrypt the username and password the user enters with the key defined above and save as a string.
+      username <- paste(PKI.encrypt(charToRaw(input$loginUsername), key, "aes256"), collapse = "")
+      password <- paste(PKI.encrypt(charToRaw(input$loginPassword), key, "aes256"), collapse = "")
+      
+      # Read all users into a data frame object.
+      users <- as.data.frame(read.csv("users.csv"))
+      
+      # Run through the users data frame object.
+      for (i in 1:nrow(users)) {
+        # Check that the entered username and password match the current entry
+        if (identical(username, as.character(users$Username[i])) && identical(password, as.character(users$Password[i]))) {
+          # If they do, set the client's variables to logged in status.
+          output$loggedIn <- renderText({paste("1")})
+          loggedIn <- TRUE
+          output$loginStatus <- renderText({paste("Welcome ", input$loginUsername, "!", sep = "")})
+        }
+      }
+      
+      # If the user is still not logged in after checking each username/password in the users data frame, output that
+      # their username/password combo does not match any existing users.
+      if (!loggedIn) {
+        output$loginDisplayMessage <- renderText({
+          paste("Incorrect username or password.")
+        })
+      }
+    }
+  })
+  
+  # Executes everytime the sign up button is pressed
+  signUp <- observeEvent(input$signupButton, {
+    # Check if user is logged in:
+    if (!is.null(input$signupUsername) && !loggedIn) {
+      
+      # String used to build the final display message output for the sign up page.
+      displayMessage <- ""
+      
+      # Encrypt the username with the key defined above and save as a string.
+      username <- paste(PKI.encrypt(charToRaw(input$signupUsername), key, "aes256"), collapse = "")
+      
+      # Read all users into a data frame object.
+      users <- as.data.frame(read.csv("users.csv"))
+      
+      newUser <- TRUE
+      # Run through the users data frame object.
+      for (i in 1:nrow(users)) {
+        # Check if the username the user wants to sign up with is already registered
+        if (identical(username, as.character(users$Username[i]))) {
+          # This username is taken, so display to this message to the user and exit the loop.
+          newUser <- FALSE
+          displayMessage <- paste(displayMessage, input$signupUsername, " is already taken.\n", sep = "")
+          break
+        }
+      }
+      
+      # Encrypt the two passwords the user entered so they may be compared and saved.
+      password1 <- paste(PKI.encrypt(charToRaw(input$signupPassword1), key, "aes256"), collapse = "")
+      password2 <- paste(PKI.encrypt(charToRaw(input$signupPassword2), key, "aes256"), collapse = "")
+      
+      # Checks that the passwords match and that it is at least 8 characters.
+      validPassword <- FALSE
+      if (identical(password1, password2)) {
+        # Calculates the number of characters in the actual password, not the encrypted one.
+        if (nchar(input$signupPassword1) >= 8) {
+          validPassword <- TRUE
+        } else {
+          displayMessage <- paste(displayMessage, "Password must be at least 8 characters.\n", sep = "")
+        }
+      } else {
+        displayMessage <- paste(displayMessage, "Passwords do not match.\n", sep="")
+      }
+      
+      # Executed if the username is not already in the users database and both passwords match and are at least 8 characters.
+      if (newUser && validPassword) {
+        # Add the new entry to the users.csv file.
+        write(paste(username, ",", password1, sep=""), file="users.csv", append=TRUE)
+        # Notify the user their account has been added.
+        displayMessage <- paste(displayMessage, "Your account has registered successfully!\n", sep="")
+        
+        # log the user in?
+      }
+      
+      # Set the display message.
+      output$signupDisplayMessage <- renderText({paste(displayMessage)})
+    }
+  })
+  
+  # Executed when the user presses the log out button.
+  logout <- observeEvent(input$logoutButton, {
+    output$loggedIn <- renderText({paste("0")})
+    loggedIn <- FALSE
+    output$loginStatus <- renderText({paste("Logout successful!")})
+  })
   
   # Reactive expression called whenever the inputs changed.
   # Used to calculate the minutes set and the machine learning function.
