@@ -57,6 +57,12 @@ shinyServer(function(input, output, session) {
       # Encrypt the username with the key defined above and save as a string.
       username <- paste(PKI.encrypt(charToRaw(input$signupUsername), key, "aes256"), collapse = "")
       
+      validUsername <- TRUE
+      if (nchar(input$signupUsername) < 4) {
+        validUsername <- FALSE
+        displayMessage <- paste(displayMessage, "Username must be 4 or more characters.\n", sep = "")
+      }
+      
       # Read all users into a data frame object.
       users <- as.data.frame(read.csv("users.csv"))
       
@@ -90,7 +96,7 @@ shinyServer(function(input, output, session) {
       }
       
       # Executed if the username is not already in the users database and both passwords match and are at least 8 characters.
-      if (newUser && validPassword) {
+      if (newUser && validUsername && validPassword) {
         # Add the new entry to the users.csv file.
         write(paste(username, ",", password1, sep=""), file="users.csv", append=TRUE)
         # Notify the user their account has been added.
