@@ -39,7 +39,7 @@ shinyServer(function(input, output, session) {
       # If the user is still not logged in after checking each username/password in the users data frame, output that
       # their username/password combo does not match any existing users.
       if (!loggedIn) {
-        output$loginDisplayMessage <- renderText({
+        output$loginErrorMessage <- renderText({
           paste("Incorrect username or password.")
         })
       }
@@ -53,6 +53,7 @@ shinyServer(function(input, output, session) {
       
       # String used to build the final display message output for the sign up page.
       displayMessage <- ""
+      errorMessage <- ""
       
       # Encrypt the username with the key defined above and save as a string.
       username <- paste(PKI.encrypt(charToRaw(input$signupUsername), key, "aes256"), collapse = "")
@@ -60,7 +61,7 @@ shinyServer(function(input, output, session) {
       validUsername <- TRUE
       if (nchar(input$signupUsername) < 4) {
         validUsername <- FALSE
-        displayMessage <- paste(displayMessage, "Username must be 4 or more characters.\n", sep = "")
+        errorMessage <- paste(errorMessage, "Username must be 4 or more characters.<br/>", sep = "")
       }
       
       # Read all users into a data frame object.
@@ -73,7 +74,7 @@ shinyServer(function(input, output, session) {
         if (identical(username, as.character(users$Username[i]))) {
           # This username is taken, so display to this message to the user and exit the loop.
           newUser <- FALSE
-          displayMessage <- paste(displayMessage, input$signupUsername, " is already taken.\n", sep = "")
+          errorMessage <- paste(errorMessage, input$signupUsername, " is already taken.<br/>", sep = "")
           break
         }
       }
@@ -89,10 +90,10 @@ shinyServer(function(input, output, session) {
         if (nchar(input$signupPassword1) >= 8) {
           validPassword <- TRUE
         } else {
-          displayMessage <- paste(displayMessage, "Password must be at least 8 characters.\n", sep = "")
+          errorMessage <- paste(errorMessage, "Password must be at least 8 characters.<br/>", sep = "")
         }
       } else {
-        displayMessage <- paste(displayMessage, "Passwords do not match.\n", sep="")
+        errorMessage <- paste(errorMessage, "Passwords do not match.<br/>", sep="")
       }
       
       # Executed if the username is not already in the users database and both passwords match and are at least 8 characters.
@@ -100,13 +101,14 @@ shinyServer(function(input, output, session) {
         # Add the new entry to the users.csv file.
         write(paste(username, ",", password1, sep=""), file="users.csv", append=TRUE)
         # Notify the user their account has been added.
-        displayMessage <- paste(displayMessage, "Your account has registered successfully!\n", sep="")
+        displayMessage <- paste(displayMessage, "Your account has registered successfully!<br/>", sep="")
         
         # log the user in?
       }
       
-      # Set the display message.
-      output$signupDisplayMessage <- renderText({paste(displayMessage)})
+      # Set the display and error messages.
+      output$signupErrorMessage <- renderUI({HTML(paste(errorMessage))})
+      output$signupDisplayMessage <- renderText({HTML(paste(displayMessage))})
     }
   })
   
@@ -120,6 +122,14 @@ shinyServer(function(input, output, session) {
   # Reactive expression called whenever the inputs changed.
   # Used to calculate the minutes set and the machine learning function.
   data <- reactive({
+    # Default temperature value
+    temperature <- 0
+    
+    # Checks that the user entered a value temperature
+    if (!is.na(input$temp)) {
+      temperature <- input$temp
+    }
+    
     # Convert the time input from a POSIXct object to an integer of minutes for the upper and lower bounds of the range.
     minuteLower <- as.numeric((as.POSIXlt(input$time[1])$hour * 60)) + as.numeric(as.POSIXlt(input$time[1])$min)
     minuteUpper <- as.numeric((as.POSIXlt(input$time[2])$hour * 60)) + as.numeric(as.POSIXlt(input$time[2])$min)
@@ -140,7 +150,7 @@ shinyServer(function(input, output, session) {
     # Apply the function predictCustomerAmount() to every minute in the data frame (where x is the minute)
     customerData$customerCount <-
       apply(as.data.frame(minutes), 1, 
-            function(x) predictCustomerAmount(input$dayOfWeek, x, input$temp, input$prec))
+            function(x) predictCustomerAmount(input$dayOfWeek, x, temperature, input$prec))
     
     # predictCustomerAmount calculates the amount of customers over the next 15 minutes from the minute inputted
     # so divide this number by 15.
@@ -160,7 +170,7 @@ shinyServer(function(input, output, session) {
     # Sets the graph's title and labels, and turns their axes off (to be defined later).
     plot(data(), 
          type="l", 
-         ylim=c(1,maxLim), 
+         ylim=c(0,maxLim), 
          main="Predicted Amount of Customers", 
          xlab="Time", ylab="Amount of Customers", 
          axes = FALSE)
@@ -185,7 +195,7 @@ shinyServer(function(input, output, session) {
                         sep = ""))
     
     # Creates the y-axis from 0 to maxLim
-    axis(2, at = 1:maxLim)
+    axis(2, at = 0:maxLim)
     
     # Used to draw the left and right lines of a box over the x- and y-axes (there is a problem of the two axes not touching)
     box(bty = "L")
@@ -193,6 +203,6 @@ shinyServer(function(input, output, session) {
   
   # Sum up all the customers predicted for each minute and output it as text below the plot.
   output$text <- renderText({
-    paste("Total amount of customers: ", format(sum(data()$customerCount), digits = 6))
+    paste("Total amount of customers: ", format(sum(data()$customerCount), digits = 6), sep = "")
   })
 })
