@@ -140,7 +140,7 @@ shinyServer(function(input, output, session) {
       for (i in (minuteLower+1):minuteUpper) {
         minutes <- append(minutes, i)
       }
-    } else {
+    } else if (minuteLower + 1 == minuteUpper) {
       minutes <- append(minutes, minuteUpper)
     }
     
@@ -177,15 +177,23 @@ shinyServer(function(input, output, session) {
     
     # Create a subset of what ticks will be used for the x-axis. Creates a tick for every 15 minutes.
     ticks <- subset(data()$minutes, ((data()$minutes - floor(data()$minutes/60)*60)) %% 15 == 0)
-
-    # If the lower bound of the time is not on a quarter hour, prepends a tick before the value.
-    if (min(ticks) > min(data()$minutes)) {
-      ticks <- append(min(ticks) - 15, ticks)
-    }
     
-    # If the upper bound of the time is not on a quarter hour, append a tick after the value.
-    if (max(ticks) < max(data()$minutes)) {
-      ticks <- append(ticks, max(ticks) + 15)
+    # Check if the previous subset call did not return any ticks
+    if (length(ticks) == 0) {
+      # Only a single minute is selected
+      minute <- min(data()$minutes)
+      # Create a tick before the single minute
+      ticks <- c(minute - (minute %% 15))
+    } else {
+      # If the lower bound of the time is not on a quarter hour, prepends a tick before the value.
+      if (min(ticks) > min(data()$minutes)) {
+        ticks <- append(min(ticks) - 15, ticks)
+      }
+      
+      # If the upper bound of the time is not on a quarter hour, append a tick after the value.
+      if (max(ticks) < max(data()$minutes)) {
+        ticks <- append(ticks, max(ticks) + 15)
+      }
     }
     
     # Create the x-axis with the defined ticks and a custom label to convert the amount of minutes to a HH:MM format.
