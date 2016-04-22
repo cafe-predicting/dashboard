@@ -4,8 +4,12 @@ library(shiny)
 shinyUI(fluidPage(
   
   # JavaScript to submit forms on ENTER (specific to these input ids).
+  # Add CSS to change the font color of the login and sign up error messages, and sign up's display message.
   tags$head(
-    tags$script(src = "formSubmit.js")
+    tags$script(src = "formSubmit.js"),
+    tags$style("#loginErrorMessage { color: red; }"),
+    tags$style("#signupErrorMessage { color: red; }"),
+    tags$style("#signupDisplayMessage { color: #428bca; }")
   ),
   
   # Application title
@@ -38,7 +42,7 @@ shinyUI(fluidPage(
          actionButton("loginButton", "Submit"),
          br(), br(),
          # Used to display if the user's credintials were incorrect.
-         textOutput("loginDisplayMessage")
+         textOutput("loginErrorMessage")
         )
       ),
       # Sign up page
@@ -52,7 +56,8 @@ shinyUI(fluidPage(
           #br(),
           actionButton("signupButton", "Sign Up"),
           br(), br(),
-          textOutput("signupDisplayMessage")
+          htmlOutput("signupErrorMessage"),
+          htmlOutput("signupDisplayMessage")
         )
       )
     )
