@@ -1,6 +1,7 @@
 library(shiny)
 library(PKI)
 source("customerPredictor.R")
+source("healthyPredictor.R")
 
 # Define server logic for the dashboard.
 shinyServer(function(input, output, session) {
@@ -160,6 +161,17 @@ shinyServer(function(input, output, session) {
     customerData
   })
   
+  healthyData <- reactive({ #eventReactive(input$healthyAge || input$healthyHour, {
+    healthyPredictor(
+      input$healthyDayOfWeek,
+      input$healthyHour,
+      input$healthyGender,
+      input$healthyAge,
+      input$healthyAdvHealth,
+      input$healthyAdvTemp,
+      input$healthyPrecipitation)
+  })
+  
   # Generate a graph of the data that is gathered in the 'data' variable above.
   output$plot <- renderPlot({
     # Sets the max y-limit for the graph to 5, unless there is greater than 5 customers predicted in one minute.
@@ -173,7 +185,8 @@ shinyServer(function(input, output, session) {
          ylim=c(0,maxLim), 
          main="Predicted Amount of Customers", 
          xlab="Time", ylab="Amount of Customers", 
-         axes = FALSE)
+         axes = FALSE,
+         col = "#428bca")
     
     # Create a subset of what ticks will be used for the x-axis. Creates a tick for every 15 minutes.
     ticks <- subset(data()$minutes, ((data()$minutes - floor(data()$minutes/60)*60)) %% 15 == 0)
@@ -212,5 +225,33 @@ shinyServer(function(input, output, session) {
   # Sum up all the customers predicted for each minute and output it as text below the plot.
   output$text <- renderText({
     paste("Total amount of customers: ", format(sum(data()$customerCount), digits = 6), sep = "")
+  })
+  
+  output$healthyText <- renderUI({
+    # Default values for text output - should be overriden
+    textColor <- "black"
+    textContent <- "Unexpected error"
+    
+    # Probability value gathered from healthyPredictor function in reactive expression above.
+    probability <- healthyData() * 100
+    # If greater than 50% chance, we'll say the customer will buy a healthy item
+    # Output this probability chance to the user
+    if (probability >= 50) {
+      textColor <- "green"
+      textContent <- "Bought healthy food!"
+    # If less than 50% chance, we'll say the customer will not buy a healthy item
+    } else {
+      textColor <- "red"
+      textContent <- "Bought all unhealthy food."
+      # Invert the chance for probability the customer will not buy healthy.
+      probability <- 100 - probability
+    }
+    
+    # Output the information gathered above using the correct font color and message
+    HTML(paste(
+      "<p><span style='color:", textColor, "; font-size: 16pt;'>",
+        textContent,
+      "</span><p>",
+      "<p>Probability: ", probability, "%</p>", sep = ""))
   })
 })

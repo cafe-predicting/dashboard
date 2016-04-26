@@ -9,7 +9,8 @@ shinyUI(fluidPage(
     tags$script(src = "formSubmit.js"),
     tags$style("#loginErrorMessage { color: red; }"),
     tags$style("#signupErrorMessage { color: red; }"),
-    tags$style("#signupDisplayMessage { color: #428bca; }")
+    tags$style("#signupDisplayMessage { color: #428bca; }"),
+    tags$style("#healthyText { text-align: center; margin-top: 12px; }")
   ),
   
   # Application title
@@ -127,7 +128,54 @@ shinyUI(fluidPage(
           )
         )
       ),
-      tabPanel("Healthy Predictor"),
+      tabPanel("Healthy Predictor",
+        sidebarLayout(
+          sidebarPanel(
+            # DayOfWeek input (drop down)
+            selectInput("healthyDayOfWeek", "Day of the week:",
+                        c("Monday" = "Monday",
+                          "Tuesday" = "Tuesday",
+                          "Wednesday" = "Wednesday",
+                          "Thursday" = "Thursday",
+                          "Friday" = "Friday")),
+            br(),
+            sliderInput("healthyHour","Hour of day:",
+                        value = 12,
+                        min = 0, max = 23),
+            br(),
+            selectInput("healthyGender","Gender:",
+                        c("Female" = "Female",
+                          "Male" = "Male")),
+            br(),
+            selectInput("healthyAge","Age:",
+                        c("Adult" = "Adult",
+                          "Child" = "Child",
+                          "Senior" = "Senior",
+                          "Young Adult" = "Young Adult")),
+            br(),
+            selectInput("healthyAdvHealth","Advertised Item's Health:",
+                        c("Healthy" = "Healthy",
+                          "Unhealthy" = "Unhealthy")),
+            br(),
+            selectInput("healthyAdvTemp","Advertised Item's Temperature:",
+                        c("Cold" = "Cold",
+                          "Hot" = "Hot")),
+            br(),
+            # Precipitation input (drop down)
+            selectInput("healthyPrecipitation", "Precipitation outside:",
+                        c("Clear" = "Clear",
+                          "Cloudy" = "Clouds",
+                          "Drizzling" = "Drizzle",
+                          "Fog" = "Fog",
+                          "Misty" = "Mist",
+                          "Raining" = "Rain",
+                          "Snowing" = "Snow"))
+          ),
+          mainPanel(
+            htmlOutput("healthyText")
+          )
+        )
+      ),
       tabPanel("Advertisement Predictor"),
       tabPanel("Demographic Predictor")
     )
