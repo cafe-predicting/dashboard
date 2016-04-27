@@ -2,6 +2,7 @@ library(shiny)
 library(PKI)
 source("customerPredictor.R")
 source("healthyPredictor.R")
+source("AdvertisingPredictor.R")
 
 # Define server logic for the dashboard.
 shinyServer(function(input, output, session) {
@@ -183,6 +184,11 @@ shinyServer(function(input, output, session) {
     abs(truePrediction - falsePrediction)
   })
   
+  # Reactive for Advertising Predictor
+  advData <- reactive({
+   advertisingPredictor(input$advProdTemp, input$advProdHealth)
+  })
+  
   # Generate a graph of the data that is gathered in the 'data' variable above.
   output$plot <- renderPlot({
     # Sets the max y-limit for the graph to 5, unless there is greater than 5 customers predicted in one minute.
@@ -272,5 +278,16 @@ shinyServer(function(input, output, session) {
         textContent,
       "</span><p>",
       "<p>Probability: ", format(probability, digits = 5), "%</p>", sep = ""))
+  })
+  
+  # Output for Advertising Predictor
+  output$advertiseText <- renderUI({
+   # Calcualte % of success
+   chanceSucc <- advData() * 100
+   
+   # Output results to html for printing in UI
+   HTML(paste(
+    "<p>Likelyhood of Advertised Item being Purchased:"</p>,
+    "<p>"format(chanceSucc, digits = 5). "%<p>", sep = ""))
   })
 })
