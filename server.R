@@ -161,7 +161,7 @@ shinyServer(function(input, output, session) {
     customerData
   })
   
-  healthyData <- reactive({ #eventReactive(input$healthyAge || input$healthyHour, {
+  healthyData <- reactive({
     truePrediction <- healthyPredictor(TRUE,
       input$healthyDayOfWeek,
       input$healthyHour,
@@ -180,7 +180,7 @@ shinyServer(function(input, output, session) {
      input$healthyAdvTemp,
      input$healthyPrecipitation)
     
-    truePrediction - falsePrediction
+    abs(truePrediction - falsePrediction)
   })
   
   # Generate a graph of the data that is gathered in the 'data' variable above.
@@ -240,7 +240,7 @@ shinyServer(function(input, output, session) {
   
   output$healthyText <- renderUI({
     # Default values for text output - should be overriden
-    textColor <- "black"
+    textColor <- "red"
     textContent <- "Unexpected error"
     
     # Probability value gathered from healthyPredictor function in reactive expression above.
@@ -252,7 +252,7 @@ shinyServer(function(input, output, session) {
       textContent <- "Bought healthy food!"
     # If less than 50% chance, we'll say the customer will not buy a healthy item
     } else {
-      textColor <- "red"
+      textColor <- "#FF6D0C" # shade of orange
       textContent <- "Bought all unhealthy food."
       # Invert the chance for probability the customer will not buy healthy.
       probability <- 100 - probability
