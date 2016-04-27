@@ -17,8 +17,8 @@ advertisingPredictor <- function(advProdTemp, advProdHealth){
   
   return((0.3153816
           *advProdTempCPT(advProdTemp)
-          *advProdHealthCPT(advProdHealth)))
- 
+          *advProdHealthCPT(advProdHealth))
+          /(advProdTempTable(advProdTemp)*advProdHealthTable(advProdHealth)))
 }
 
 # P ( advTemp | boughtAdv)
@@ -37,4 +37,22 @@ advProdHealthCPT <- function(advProdHealth){
   }else{
     return(0.4254883)
   }
+}
+
+# P ( advTemp )
+advProdTempTable <- funtion(advProdTemp){
+ if(advProdTemp == "Cold"){
+  return(0.3981161)
+ }else{
+  return(0.6018838)
+ }
+}
+
+# P ( advHealth )
+advProdHealthTable <- function(advProdHealth){
+ if(advProdHealt == "Healthy"){
+  return(0.5738643)
+ }else{
+  return(0.4261356)
+ }
 }
