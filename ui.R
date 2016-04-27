@@ -10,7 +10,8 @@ shinyUI(fluidPage(
     tags$style("#loginErrorMessage { color: red; }"),
     tags$style("#signupErrorMessage { color: red; }"),
     tags$style("#signupDisplayMessage { color: #428bca; }"),
-    tags$style("#healthyText { text-align: center; margin-top: 12px; }")
+    tags$style("#healthyText { text-align: center; margin-top: 12px; }"),
+    tags$style("#advertiseText { text-align: center; margin-top: 12px; }")
   ),
   
   # Application title
@@ -184,8 +185,8 @@ shinyUI(fluidPage(
         )
       ),
       tabPanel("Advertisement Predictor",
-        sidbarLayout(
-          sidbarPanel(
+        sidebarLayout(
+          sidebarPanel(
             #Advertised Item Temperature input (drop down)
             selectInput("advProdTemp", "Advertised Item Temperature:",
                           c("Hot" = "Hot",
@@ -194,15 +195,14 @@ shinyUI(fluidPage(
             #Advertised Item Health input (drop down)
             selectInput("advProdHealth", "Advertised Item Health:",
                           c("Healthy" = "Healty",
-                            "Unhealthy" = "Unhealthy")),
+                            "Unhealthy" = "Unhealthy"))
           ),
           # Main Panel Displays Output of Prediction
           mainPanel(
             htmlOutput("advertiseText")
           )
         )
-      ),
-      tabPanel("Demographic Predictor")
+      )
     )
   )
 ))

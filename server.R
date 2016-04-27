@@ -163,7 +163,7 @@ shinyServer(function(input, output, session) {
   })
   
   healthyData <- reactive({
-    truePrediction <- healthyPredictor(TRUE,
+    healthyPredictor(TRUE,
       input$healthyDayOfWeek,
       input$healthyHour,
       input$healthyGender,
@@ -171,17 +171,6 @@ shinyServer(function(input, output, session) {
       input$healthyAdvHealth,
       input$healthyAdvTemp,
       input$healthyPrecipitation)
-    
-    falsePrediction <- healthyPredictor(FALSE,
-     input$healthyDayOfWeek,
-     input$healthyHour,
-     input$healthyGender,
-     input$healthyAge,
-     input$healthyAdvHealth,
-     input$healthyAdvTemp,
-     input$healthyPrecipitation)
-    
-    abs(truePrediction - falsePrediction)
   })
   
   # Reactive for Advertising Predictor
@@ -251,6 +240,7 @@ shinyServer(function(input, output, session) {
     
     # Probability value gathered from healthyPredictor function in reactive expression above.
     probability <- healthyData() * 100
+    
     # If greater than 50% chance, we'll say the customer will buy a healthy item
     # Output this probability chance to the user
     if (probability >= 50) {
@@ -282,12 +272,14 @@ shinyServer(function(input, output, session) {
   
   # Output for Advertising Predictor
   output$advertiseText <- renderUI({
-   # Calcualte % of success
-   chanceSucc <- advData() * 100
+    # Calcualte % of success
+    chanceSucc <- advData() * 100
    
-   # Output results to html for printing in UI
-   HTML(paste(
-    "<p>Likelyhood of Advertised Item being Purchased:"</p>,
-    "<p>"format(chanceSucc, digits = 5). "%<p>", sep = ""))
+    # Output results to html for printing in UI
+    HTML(paste(
+    "<span style='font-size: 16pt;'>",
+      "<p>Likelihood of Advertised Item being Purchased:</p>",
+      "<p>", format(chanceSucc, digits = 5), "%<p>",
+    "</span>", sep = ""))
   })
 })
