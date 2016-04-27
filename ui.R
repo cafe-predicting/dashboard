@@ -183,7 +183,25 @@ shinyUI(fluidPage(
           )
         )
       ),
-      tabPanel("Advertisement Predictor"),
+      tabPanel("Advertisement Predictor",
+        sidbarLayout(
+          sidbarPanel(
+            #Advertised Item Temperature input (drop down)
+            selectInput("advProdTemp", "Advertised Item Temperature:",
+                          c("Hot" = "Hot",
+                            "Cold" = "Cold")),
+            br(),
+            #Advertised Item Health input (drop down)
+            selectInput("advProdHealth", "Advertised Item Health:",
+                          c("Healthy" = "Healty",
+                            "Unhealthy" = "Unhealthy")),
+          ),
+          # Main Panel Displays Output of Prediction
+          mainPanel(
+            htmlOutput("advertiseText")
+          )
+        )
+      ),
       tabPanel("Demographic Predictor")
     )
   )
