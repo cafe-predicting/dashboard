@@ -128,6 +128,7 @@ shinyUI(fluidPage(
           )
         )
       ),
+      # Healthy predictor: user enters values on a customer to see the probability that they will buy a healthy item.
       tabPanel("Healthy Predictor",
         sidebarLayout(
           sidebarPanel(
@@ -139,24 +140,29 @@ shinyUI(fluidPage(
                           "Thursday" = "Thursday",
                           "Friday" = "Friday")),
             br(),
+            # Hour input (numeric slider)
             sliderInput("healthyHour","Hour of day:",
                         value = 12,
                         min = 0, max = 23),
             br(),
+            # Gender input (drop down)
             selectInput("healthyGender","Gender:",
                         c("Female" = "Female",
                           "Male" = "Male")),
             br(),
+            # Age input (drop down)
             selectInput("healthyAge","Age:",
                         c("Adult" = "Adult",
                           "Child" = "Child",
                           "Senior" = "Senior",
                           "Young Adult" = "Young Adult")),
             br(),
-            selectInput("healthyAdvHealth","Advertised Item's Health:",
+            # Advertised Item's Health input (drop down)
+            selectInput("healthyAdvHealth","Advertised Item's Healthiness:",
                         c("Healthy" = "Healthy",
                           "Unhealthy" = "Unhealthy")),
             br(),
+            # Advertised Item's Temperature input (drop down)
             selectInput("healthyAdvTemp","Advertised Item's Temperature:",
                         c("Cold" = "Cold",
                           "Hot" = "Hot")),
@@ -171,6 +177,7 @@ shinyUI(fluidPage(
                           "Raining" = "Rain",
                           "Snowing" = "Snow"))
           ),
+          # Create a panel to display the output of the predictor
           mainPanel(
             htmlOutput("healthyText")
           )
