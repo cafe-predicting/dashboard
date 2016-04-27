@@ -162,7 +162,7 @@ shinyServer(function(input, output, session) {
   })
   
   healthyData <- reactive({ #eventReactive(input$healthyAge || input$healthyHour, {
-    healthyPredictor(
+    truePrediction <- healthyPredictor(TRUE,
       input$healthyDayOfWeek,
       input$healthyHour,
       input$healthyGender,
@@ -170,6 +170,17 @@ shinyServer(function(input, output, session) {
       input$healthyAdvHealth,
       input$healthyAdvTemp,
       input$healthyPrecipitation)
+    
+    falsePrediction <- healthyPredictor(FALSE,
+     input$healthyDayOfWeek,
+     input$healthyHour,
+     input$healthyGender,
+     input$healthyAge,
+     input$healthyAdvHealth,
+     input$healthyAdvTemp,
+     input$healthyPrecipitation)
+    
+    truePrediction - falsePrediction
   })
   
   # Generate a graph of the data that is gathered in the 'data' variable above.
@@ -184,7 +195,7 @@ shinyServer(function(input, output, session) {
          type="l", 
          ylim=c(0,maxLim), 
          main="Predicted Amount of Customers", 
-         xlab="Time", ylab="Amount of Customers", 
+         xlab="Time", ylab="Amount of Customers (per minute)", 
          axes = FALSE,
          col = "#428bca")
     
@@ -247,11 +258,19 @@ shinyServer(function(input, output, session) {
       probability <- 100 - probability
     }
     
+    # Bound predictions to actual percentages.
+    if (probability < 0) {
+      probability <- 0
+    }
+    else if (probability > 100) {
+      probability <- 100
+    }
+    
     # Output the information gathered above using the correct font color and message
     HTML(paste(
       "<p><span style='color:", textColor, "; font-size: 16pt;'>",
         textContent,
       "</span><p>",
-      "<p>Probability: ", probability, "%</p>", sep = ""))
+      "<p>Probability: ", format(probability, digits = 5), "%</p>", sep = ""))
   })
 })
